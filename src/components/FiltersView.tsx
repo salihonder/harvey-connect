@@ -102,7 +102,7 @@ export class FiltersView extends Component<Props, State> {
         super(props)
         this.getCategoryJSON()
         this.state = {
-            activeFilter: this.props.filters[0] || 'Anything',
+            activeFilter: this.props.filters[0] || strings.anything,
             categoryJSON: undefined
         }
     }
@@ -126,7 +126,7 @@ export class FiltersView extends Component<Props, State> {
 
     }
     onPressDone() {
-        const selectedFilters = this.state.activeFilter === 'Anything'
+        const selectedFilters = this.state.activeFilter === strings.anything
             ? []
             : [this.state.activeFilter]
 
@@ -165,14 +165,14 @@ export class FiltersView extends Component<Props, State> {
             lang = 'en'
         }
         
-        console.log(item)
-
         let catName = item.name.toLowerCase()
-        console.log(catName)
                 
         let value = this.state.categoryJSON[lang][catName]
-        console.log(value)
         
+        if (value === undefined) {
+            value = strings.anything
+        }
+
         return value
     }
 
@@ -185,13 +185,15 @@ export class FiltersView extends Component<Props, State> {
         if (lang !== 'es' && lang !== 'en' && lang !== 'hi') {
             lang = 'en'
         }
+
         let cats = this.props.categories.items[item.name.toLowerCase()]
+
         if (cats !== undefined) {
             let str = ''
             for (let i = 0; i < Math.min(3, cats.length); i++) {
                 let key = Object.keys(cats[i])[0]
                 let value = this.state.categoryJSON[lang][key]
-                str += value + ', '
+                str += `${value}, `
             }
             return str.slice(0, str.length - 2)
         } else {
@@ -208,7 +210,7 @@ export class FiltersView extends Component<Props, State> {
         })
 
         return [
-            { name: 'Anything', key: 'anything' },
+            { name: strings.anything, key: 'anything' },
             ...categories
         ]
     }
